@@ -27,7 +27,7 @@ class Productvariation(BaseModel):
 class Order(BaseModel):
     customer_id:int
     address:str
-    Totalprice:int
+    Totalprice:int=0
 
 class ProductvariationI(BaseModel):
     id:int

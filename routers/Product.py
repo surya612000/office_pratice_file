@@ -37,3 +37,5 @@ def get_customer(db:Session=Depends(database.get_db)):
     db_customers=db.query(models.Product).all()
     return db_customers
 
+
+

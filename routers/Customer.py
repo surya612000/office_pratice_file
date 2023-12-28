@@ -11,6 +11,8 @@ router=APIRouter(
     responses={404:{"description":"Not Found"}}
 )
 
+
+
 #for create customer
 
 @router.post("/")
@@ -20,6 +22,14 @@ def create_customer(customer:schemas.Customer1,db:Session=Depends(database.get_d
     db.commit()
     db.refresh(db_customer)
     return db_customer
+
+
+#Get all customers
+
+@router.get("/",response_model=List[schemas.Customer1])
+def get_all_customers(db:Session=Depends(database.get_db)):
+    db_customers=db.query(models.Customer).all()
+    return db_customers
 
 
 
