@@ -2,7 +2,7 @@ from fastapi import APIRouter,Depends,HTTPException,status
 from typing import List
 import database
 import schemas
-import models
+import models,oauth2
 from sqlalchemy.orm import Session
 
 router=APIRouter(
@@ -14,7 +14,7 @@ router=APIRouter(
 #Insert the product information
 
 @router.post("/")
-def create_product(product:schemas.Product,db:Session=Depends(database.get_db)):
+def create_product(product:schemas.Product,db:Session=Depends(database.get_db),get_current_user:schemas.Customer1=Depends(oauth2.get_current_user)):
     db_product=models.Product(name=product.name,description=product.description,warrenty=product.warrenty,guaranty=product.guaranty)
     db.add(db_product)
     db.commit()
@@ -24,7 +24,7 @@ def create_product(product:schemas.Product,db:Session=Depends(database.get_db)):
 #get the specific product information
 
 @router.get("/{id}",response_model=schemas.Product_out)
-def get_product(id:int,db:Session=Depends(database.get_db)):
+def get_product(id:int,db:Session=Depends(database.get_db),get_current_user:schemas.Customer1=Depends(oauth2.get_current_user)):
     db_product=db.query(models.Product).filter(models.Product.id==id).first()
     if db_product is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Product Not Found")
@@ -33,7 +33,7 @@ def get_product(id:int,db:Session=Depends(database.get_db)):
 #get all products information
 
 @router.get("/",response_model=List[schemas.Product_out])
-def get_customer(db:Session=Depends(database.get_db)):
+def get_customer(db:Session=Depends(database.get_db),get_current_user:schemas.Customer1=Depends(oauth2.get_current_user)):
     db_customers=db.query(models.Product).all()
     return db_customers
 

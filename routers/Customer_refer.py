@@ -1,8 +1,6 @@
 from fastapi import APIRouter,Depends,HTTPException,status
 from typing import List
-import database
-import schemas
-import models
+import database,schemas,models,oauth2
 from sqlalchemy.orm import Session
 
 router=APIRouter(
@@ -15,7 +13,7 @@ router=APIRouter(
 #To specify referral
 
 @router.post("/")
-def referal(customer:schemas.Refer,db:Session=Depends(database.get_db)):
+def referal(customer:schemas.Refer,db:Session=Depends(database.get_db),get_current_user:schemas.Customer1=Depends(oauth2.get_current_user)):
     db_refer=models.Customer_refer(referalId=customer.referalId,referedId=customer.referedId)
     db.add(db_refer)
     db.commit()
@@ -26,14 +24,14 @@ def referal(customer:schemas.Refer,db:Session=Depends(database.get_db)):
 #get all refer information
 
 @router.get("/",response_model=List[schemas.referout])
-def get_all(db:Session=Depends(database.get_db)):
+def get_all(db:Session=Depends(database.get_db),get_current_user:schemas.Customer1=Depends(oauth2.get_current_user)):
     db_r=db.query(models.Customer_refer).all()
     return db_r
 
 #get the specific referal information
 
 @router.get("/{id}",response_model=schemas.referout)
-def get_refer(id:int,db:Session=Depends(database.get_db)):
+def get_refer(id:int,db:Session=Depends(database.get_db),get_current_user:schemas.Customer1=Depends(oauth2.get_current_user)):
     db_re=db.query(models.Customer_refer).filter(models.Customer_refer.id==id).first()
    
     if db_re is None:

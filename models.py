@@ -18,8 +18,9 @@ class Customer(Base):
     __tablename__="customers"
     id=Column(Integer,primary_key=True,index=True)
     name=Column(String,index=True)
+    password=Column(String)
     phone=Column(Integer)
-    gmail=Column(String)
+    gmail=Column(String,unique=True)
     referal_code=Column(String,unique=True)
     # referrals_made = relationship("Customer_refer",foreign_keys=[Customer_refer.referalId],back_populates=("referrer"))
     # referrals_received = relationship("Customer_refer", foreign_keys=[Customer_refer.referedId],back_populates=("referred"))
@@ -80,9 +81,11 @@ class Orderitem(Base):
     order=relationship("Order",backref=backref("order_contain_items"),foreign_keys=[order_id])
     noofproducts=relationship("Productvariations",backref=backref("product_variation"),foreign_keys=[product_variation_id])
 
+class Roles(Base):
+    __tablename__="roles"
 
-    
-
-
-
+    id=Column(Integer,primary_key=True,index=True)
+    role=Column(String)
+    customer_id=Column(Integer,ForeignKey("customers.id"))
+    customer_details=relationship("Customer",backref=backref("roles"),foreign_keys=[customer_id])
 

@@ -1,13 +1,38 @@
-from typing import Union,List
+from typing import Union,List,Optional
 from pydantic import BaseModel
+
 
 class Customer1(BaseModel):
     name:str
+    password:str
     phone:int
     gmail:str
     referal_code:str
     
 
+
+
+class Role(BaseModel):
+    role:str
+    customer_id:int
+
+class Role1(BaseModel):
+    role:str
+
+class Customer2(BaseModel):
+    name:str
+    phone:int
+    gmail:str
+    referal_code:str
+    roles:List[Role1]
+
+    class Config:
+        orm_mode=True
+    
+class Login(BaseModel):
+    username:str
+    password:str
+    role:str
 class Refer(BaseModel):
     referalId:int
     referedId:int
@@ -41,11 +66,16 @@ class orderinside(BaseModel):
     quantity:int
     noofproducts:ProductvariationI
 
+class login(BaseModel):
+    username:str
+    password:str
+    role:str
+
 class order_out(BaseModel):
     id:int
     address:str
     Totalprice:int
-    order_customer:Customer1
+    order_customer:Customer2
     order_contain_items:List[orderinside]
     class Config:
         orm_mode=True
@@ -54,7 +84,7 @@ class Orderitem_out(BaseModel):
     id:int
     address:str
     Totalprice:int
-    order_customer:Customer1
+    order_customer:Customer2
 
 class Orderitem1(BaseModel):
     order_id:int
@@ -63,8 +93,8 @@ class Orderitem1(BaseModel):
 
 class Customer_re(BaseModel):
     id:int
-    referrer:Customer1
-    referred:Customer1
+    referrer:Customer2
+    referred:Customer2
     
 
 class order_out_customer(BaseModel):
@@ -81,9 +111,10 @@ class Customer_out(BaseModel):
     name:str
     phone:int
     gmail:str
+    roles:List[Role]
     referal_code:str
     referrals_made:List[Customer_re]=[]
-    # referrals_received:List[Customer_re]=[]
+    referrals_received:List[Customer_re]=[]
     customerorder:List[order_out_customer]
     class Config:
         orm_mode=True
@@ -107,9 +138,25 @@ class Product_out(BaseModel):
     guaranty:int
     product_variations:List[ProductvariationI]=[]
 
+
+class sample1(BaseModel):
+    id:int
+    # address:str
+    
 class orderItem(BaseModel):
     id:int
     order:Orderitem_out
+    # order:sample1
     # noofproducts:ProductvariationI
     class Config:
         orm_mode=True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    gmail: str | None = None
+    role:str

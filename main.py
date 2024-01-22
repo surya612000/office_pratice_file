@@ -1,6 +1,6 @@
 from fastapi import  FastAPI
 from database import  engine,get_db
-from routers import Customer,Customer_refer,Product,Productvariations,Order,Orderitems
+from routers import Customer,Customer_refer,Product,Productvariations,Order,Orderitems,login
 import models
 
 
@@ -9,12 +9,15 @@ models.Base.metadata.create_all(bind=engine)
 
 app=FastAPI()
 
+
+app.include_router(login.router)
 app.include_router(Customer.router)
 app.include_router(Customer_refer.router)
 app.include_router(Product.router)
 app.include_router(Productvariations.router)
 app.include_router(Order.router)
 app.include_router(Orderitems.router)
+# app.include_router(authentication.router)
 
 
 #for create customer
